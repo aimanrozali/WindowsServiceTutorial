@@ -39,9 +39,9 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.Description = "Windows Service Tutorial";
-            this.serviceInstaller1.DisplayName = "WinServTut.Demo";
-            this.serviceInstaller1.ServiceName = "Service1";
+            this.serviceInstaller1.Description = "USB Watcher";
+            this.serviceInstaller1.DisplayName = "USBService";
+            this.serviceInstaller1.ServiceName = "USBService";
             // 
             // ProjectInstaller
             // 
