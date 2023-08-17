@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
+using System.ServiceProcess;
 using System.IO;
 using System.Management;
-using System.Linq.Expressions;
-using System.Data.Common;
 using System.Data.SqlClient;
+using System.Threading;
+using Timer = System.Timers.Timer;
 
 namespace WindowsServiceTutorial
 {
@@ -21,6 +14,7 @@ namespace WindowsServiceTutorial
         private const string ConnectionString = "Data Source=ARZ\\SQLEXPRESS;Initial Catalog=USB;Integrated Security=True;";
         private const string AuthorizationQuery = "SELECT COUNT(*) FROM [USB].[dbo].[UsbDevices] WHERE DeviceID = @DeviceID";
         Timer timer = new Timer();
+        Thread t;
         public Service1()
         {
             InitializeComponent();
@@ -32,12 +26,21 @@ namespace WindowsServiceTutorial
             timer.Elapsed += new ElapsedEventHandler(OnElapsedTime);
             timer.Interval = 5000;
             timer.Enabled = true;
-            backgroundWorker1_DoWork();
+
+            t = new Thread(new ThreadStart(new ThreadStart(backgroundWorker1_DoWork)));
+            t.Start();
+
         }
 
         protected override void OnStop()
         {
             WriteToFile("Service is stopped at " + DateTime.Now);
+            if((t != null) && (t.IsAlive)) 
+            {
+                Thread.Sleep(1000);
+                t.Abort();
+            }
+            
         }
         
         private void OnElapsedTime(object sender, ElapsedEventArgs e)
